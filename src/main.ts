@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as ICAL from 'ical.js';
+import * as ICAL from 'https://cdnjs.cloudflare.com/ajax/libs/ical.js/0.0.3/ical.min.js';
 
 import Handlebars from "handlebars";
 import { v4 as uuidv4 } from 'uuid';
