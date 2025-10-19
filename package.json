@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.8",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/node": "^24.8.1",
     "typescript": "~5.9.3",
     "vite": "^7.1.7"
