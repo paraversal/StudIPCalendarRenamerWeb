@@ -1,4 +1,4 @@
-declare const ICAL: any;
+import * as ICAL from 'ical.js';
 
 import Handlebars from "handlebars";
 import { v4 as uuidv4 } from 'uuid';
