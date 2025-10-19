@@ -1,3 +1,4 @@
+declare module 'ical.js';
 import ical from "ical.js"
 import Handlebars from "handlebars";
 import { v4 as uuidv4 } from 'uuid';
