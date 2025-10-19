@@ -1,5 +1,5 @@
-declare module 'ical.js';
-import ical from "ical.js"
+import * as ICAL from 'ical.js';
+
 import Handlebars from "handlebars";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,11 +9,11 @@ type DisplayEvent = {
 }
 
 type App = {
-  ical: ical.Component;
+  ical: any;
   event_map: Map<string, DisplayEvent>;
 }
 
-var app: App = {ical: ical.parse(""), event_map: new Map}
+var app: App = {ical: ICAL.parse(""), event_map: new Map}
 
 document.addEventListener("DOMContentLoaded", _ => {
   let fileInput = document.querySelector<HTMLInputElement>('#calendar-input')!
@@ -72,7 +72,7 @@ function downloadIcalString(content: string) {
 }
 
 function handleSaveCalendar() {
-  let calendar = new ical.Component(app.ical)
+  let calendar = new ICAL.Component(app.ical)
   calendar.getAllSubcomponents("vevent").map(el => {
     let eventName = el.getFirstProperty("summary")?.toICALString()!
     console.log(eventName)
@@ -80,7 +80,7 @@ function handleSaveCalendar() {
     let newEventName = app.event_map.get(eventName.replace("SUMMARY:", ""))
     el.updatePropertyWithValue("summary", newEventName?.final_name)
   })
-  let new_ical = ical.stringify([app.ical])
+  let new_ical = ICAL.stringify([app.ical])
   downloadIcalString(new_ical)
 }
 
@@ -173,13 +173,13 @@ function handleRenameModalConfirm() {
 function handleLoadedCalendarFile(file_text: string) {
   document.querySelector("#calendar-input-container")!.outerHTML = ""
   
-  let calendar = ical.parse(file_text)
+  let calendar = ICAL.parse(file_text)
   app.ical = calendar
-  let component = new ical.Component(calendar)
+  let component = new ICAL.Component(calendar)
   
 
   component.getAllSubcomponents()
-    .map(el => new ical.Event(el))
+    .map(el => new ICAL.Event(el))
     .map(el => el.summary)
     .filter(onlyUnique)
     .filter(el => !!el)
