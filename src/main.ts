@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as ICAL from 'ical.js';
 
 import Handlebars from "handlebars";
