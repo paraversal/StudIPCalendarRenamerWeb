@@ -18,8 +18,7 @@ type App = {
 
 let texts = {shortText: "Rename", longText: "Merge + rename"}
 
-var app: App = {ical: ICAL.parse(""), event_map: new Map, previouslySelectedIdsAmount: 0, modalOpen: false}
-
+var app: App = {ical: null, event_map: new Map, previouslySelectedIdsAmount: 0, modalOpen: false}
 
 document.addEventListener("DOMContentLoaded", _ => {
   let fileInput = document.querySelector<HTMLInputElement>('#calendar-input')!
@@ -27,11 +26,11 @@ document.addEventListener("DOMContentLoaded", _ => {
       const selectedFile = (event.target as HTMLInputElement).files[0];
       const file_contents = await selectedFile.text()
       await handleLoadedCalendarFile(file_contents)
-     
   });
 
   document.addEventListener("keydown", e => {
-    if (e.key == "r" && !app.modalOpen) {
+    if (!app.ical) { return }
+    if (e.key == "r" && !app.modalOpen && !e.metaKey && !e.ctrlKey && getCheckedIds().length > 0) {
       let modal = document.querySelector("#renameModal")!
       bootstrap.Modal.getOrCreateInstance(modal).show()
       app.modalOpen = true
@@ -57,7 +56,11 @@ document.addEventListener("DOMContentLoaded", _ => {
     app.modalOpen = true
     renameModalInput.value = ""
     renameModalInput.focus()
-})
+  })
+
+  renameModal.addEventListener('hidden.bs.modal', () => {
+    app.modalOpen = false
+  })
 
 })
 
