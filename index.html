@@ -14,52 +14,72 @@
 </head>
 
 <body class="d-flex flex-column vh-100">
-  <nav class="navbar navbar-dark bg-primary">
+  <nav class="navbar navbar-dark bg-secondary">
     <div class="container-fluid">
       <span class="navbar-brand mb-0 h1">StudIP Lecture Calendar Batch Renamer</span>
-      <button type="button" id="save-button" class="btn btn-outline-warning">Download renamed calendar</button>
+      <button type="button" id="save-button" class="btn btn-primary">Download renamed calendar</button>
     </div>
   </nav>
 
-  <div class="container mt-3" id="calendar-input-container">
+  <figure class="text-center my-3 fade-in">
+      <h3 class="mb-3">Usage instructions</h3>
+      <div id="instructions-load-calendar" class="fade-out">
+        <p class="lead">1. Download your calendar export</p>
+        <p><small>German: StudIP → Planer → Kalender → Termine exportieren → Alle Termine</small></p>
+        <p><small>English: StudIP → Planner → Calendar → Export Dates → All Dates</small></p>
+      </div>
+    <div id="instructions-edit-calendar" class="fade-in d-none" style="animation-play-state: paused;">
+        <p class="lead">2. Edit your calendar. There are two ways to do this:</p>
+        <p>Either, <small>Select a single calendar event (by clicking on it), and press "rename".</small></p>
+        <p>Or,  <small>Select multiple calendar events that correspond to the same lecture, then click "merge + rename".</small></p>
+      </div>
+  </figure>
+  
+  <div class="fade-in">
+  <div class="container mt-3 fade-out" id="calendar-input-container">
     <div class="mb-3">
       <label for="calendar-input" class="form-label">Choose StudIP calendar export (.ics)</label>
       <input type="file" id="calendar-input" class="form-control" accept=".ics">
     </div>
   </div>
-
-  <div class="my-4 me-4">
-    <ul id="lecture-list">
-
-    </ul> 
   </div>
 
-  <div class="container-fluid mx-4" data-bs-toggle="modal" data-bs-target="#renameModal">
-    <button type="button" id="merge-button" class="btn btn-primary d-none">Rename</button>
+  
+
+  <div class="my-4 mx-4 mw-100">
+    
+    <ul class="ps-0" id="lecture-list">
+
+    </ul>
+
+    <div data-bs-toggle="modal" data-bs-target="#renameModal">
+      <button type="button" id="merge-button" class="btn btn-primary animated-button d-none" style="animation-duration: 0.3s;">Rename</button>
+    </div>
   </div>
 
   <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="rename-modal-title"></h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="new-name-modal-input" class="form-label">Input new name</label>
-          <input type="text" id="new-name-modal-input" class="form-control">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="rename-modal-title">Rename</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-rename-modal-confirm">Confirm</button>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="new-name-modal-input" class="form-label">Input new name</label>
+            <form id="new-name-form">
+              <input type="text" id="new-name-modal-input" class="form-control">
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-rename-modal-confirm">Confirm</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
   
-
   <footer class="text-light mt-auto py-3">
     <div class="container text-center">
       <p class="text-muted m-0">Disclaimer: all calendar data processing happens on device</p>
