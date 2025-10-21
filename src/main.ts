@@ -28,15 +28,6 @@ document.addEventListener("DOMContentLoaded", _ => {
       await handleLoadedCalendarFile(file_contents)
   });
 
-  document.addEventListener("keydown", e => {
-    if (!app.ical) { return }
-    if (e.key == "r" && !app.modalOpen && !e.metaKey && !e.ctrlKey && getCheckedIds().length > 0) {
-      let modal = document.querySelector("#renameModal")!
-      bootstrap.Modal.getOrCreateInstance(modal).show()
-      app.modalOpen = true
-    }
-  })
-
   let newNameForm = document.querySelector("#new-name-form")!
   newNameForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -60,6 +51,28 @@ document.addEventListener("DOMContentLoaded", _ => {
 
   renameModal.addEventListener('hidden.bs.modal', () => {
     app.modalOpen = false
+  })
+
+  document.addEventListener("keydown", e => {
+    if (!app.ical) { return }
+    if (e.key == "r" && !app.modalOpen && !e.metaKey && !e.ctrlKey && getCheckedIds().length > 0) {
+      let modal = document.querySelector("#renameModal")!
+      bootstrap.Modal.getOrCreateInstance(modal).show()
+      app.modalOpen = true
+      return
+    }
+    if (e.key == "Escape" && app.modalOpen) {
+      dismissModal()
+    } else if (e.key == "Escape" && !app.modalOpen) {
+      // unfocus all checked items
+      getCheckedIds().map(async checkId => {
+        let checkedListItem = document.getElementById(checkId)!
+        let checkBox = checkedListItem.getElementsByTagName('input')[0]
+        checkBox.checked = false
+        checkedListItem.classList.remove("active")
+        await updateMergeButton()
+      })
+    }
   })
 
 })
@@ -154,8 +167,7 @@ function getDisplayCalendarEvents(): DisplayEvent[] {
   return displayEvents
 }
 
-async function handleLectureEntryClick(e: Event){
-  handleCalendarEntryClick(e)
+async function updateMergeButton() {
   let checkedIds = getCheckedIds()
   let button = document.querySelector<HTMLButtonElement>("#merge-button")!
   let renameModalTitle = document.querySelector("#rename-modal-title")!
@@ -164,10 +176,6 @@ async function handleLectureEntryClick(e: Event){
   let buttonShouldRenameAfterSelectDownToOne = checkedIds.length == 1 && app.previouslySelectedIdsAmount > 1
   let buttonShouldRenameAfterMultipleSelect = checkedIds.length > 1 && app.previouslySelectedIdsAmount == 1
   let buttonShouldDisappear = checkedIds.length == 0
-
-  if (checkedIds.length == 0 && app.previouslySelectedIdsAmount == 0) {
-    // this should never happen
-  }
 
   if (buttonShouldDisappear) {
     button.classList.add("fade-out")
@@ -198,6 +206,11 @@ async function handleLectureEntryClick(e: Event){
   }
   app.previouslySelectedIdsAmount = checkedIds.length;
 }
+
+async function handleLectureEntryClick(e: Event){
+  handleCalendarEntryClick(e)
+  await updateMergeButton()
+}
 async function populateCalendarEntries() {
   let lectureList = document.querySelector("#lecture-list")!
   lectureList.innerHTML = ""
@@ -208,6 +221,13 @@ async function populateCalendarEntries() {
   })
 }
 
+function dismissModal(){
+  let modal = document.querySelector("#renameModal")!
+  bootstrap.Modal.getInstance(modal).toggle()
+  document.querySelector('.modal-backdrop').remove();
+  app.modalOpen = false
+}
+
 async function handleRenameModalConfirm() {
   let newNameInput = document.querySelector<HTMLInputElement>("#new-name-modal-input")!
   
@@ -216,10 +236,7 @@ async function handleRenameModalConfirm() {
     return
   }
   
-  let modal = document.querySelector("#renameModal")!
-  bootstrap.Modal.getInstance(modal).toggle()
-  document.querySelector('.modal-backdrop').remove();
-  app.modalOpen = false
+  dismissModal()
 
   let checkedIds = getCheckedIds()
   checkedIds.map(checkedId => {
